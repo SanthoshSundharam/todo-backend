@@ -47,11 +47,13 @@ class AuthController extends Controller
                 "email"=>"required|email",
                 "password"=>"required|string",
             ]);
+            
             // $existingUser = User::where("email", $request->email)->first();
+        
             if(Auth::attempt(['email'=>$request->email, 'password'=> $request->password])){
                 $user = Auth::user();
-                //$token = $user->createToken('App')->plainTextToken;
-
+                
+                $token = $user->createToken('Task')->plainTextToken;
                 return response()->json([
                     'success' => true,
                     'message' => 'Login successful.',
@@ -60,7 +62,7 @@ class AuthController extends Controller
                         'name' => $user->name,
                         'email' => $user->email,
                     ],
-                    // 'token' => $token,
+                     'token' => $token,
                 ]);
                 
         }
