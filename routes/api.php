@@ -21,8 +21,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::middleware('auth:sanctum')->post('/register', [AuthController::class, 'register'] );
+Route::post('/register', [AuthController::class, 'register'] );
 Route::post('/login', [AuthController::class, 'login'] );
 Route::middleware('auth:sanctum')->post('/create', [TaskController::class, 'create'] );
 Route::middleware('auth:sanctum')->put('/update/{id}', [TaskController::class, 'update'] );
 Route::middleware('auth:sanctum')->delete('/delete/{id}', [TaskController::class, 'destroy'] );
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::apiResource('todos', TaskController::class);
+// });
