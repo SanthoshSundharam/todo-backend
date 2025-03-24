@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Repositories;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Tasks;
 use Illuminate\Support\Facades\Auth;
 
-class TaskRepository{
+class TaskRepository
+{
 
-    public function getAllTasks($userId){
-        return Tasks::where('user_id',$userId)->get();
+    public function getAllTasks($userId)
+    {
+        return Tasks::where('user_id', $userId)->get();
     }
 
     public function getById($id, $userId)
@@ -16,7 +18,8 @@ class TaskRepository{
         return Tasks::where('id', $id)->where('user_id', $userId)->firstOrFail();
     }
 
-    public function create(array $data){
+    public function create(array $data)
+    {
 
         return Tasks::create($data);
     }
@@ -28,9 +31,9 @@ class TaskRepository{
         return $task;
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         $task = Tasks::findOrFail($id);
-        return $task->destroy();
+        return $task->delete();
     }
 }

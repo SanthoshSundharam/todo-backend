@@ -16,27 +16,17 @@ class TaskController extends Controller
     {
         $this->taskRepo = $taskRepo;
     }
-    // public function create(Request $request)
-    // {
-    //     $request->validate([
-    //         "title" => "required|max:255",
-    //         "description" => "nullable",
-    //     ]);
+    public function getUserTasks(Request $request)
+    {
+        $user = auth()->user();
 
-    //     $task = new Tasks();
-    //     $task->title = $request->title;
-    //     $task->description = $request->description;
-    //     $task->user_id = auth()->id();
-    //     $task->save();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $tasks = $this->taskRepo->getAllTasks($user->id);
 
-    //     return response()->json(['success' => true, 'message' => 'Task created successfully.', 'task' => $task], 201);
-    // }
-
-    // public function index()
-    // {
-    //     // $task->user_id = auth()->id();
-    //     return response()->json($this->taskRepo->getAll(Auth::id()));
-    // }
+        return response()->json(['tasks' => $tasks], 200);
+    }
 
     public function create(Request $request)
     {
@@ -53,31 +43,12 @@ class TaskController extends Controller
 
             $task = $this->taskRepo->create($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Task created successfully.',
-                'task' => $task,
-                'user_id'=>$data['user_id']
-            ], 201);
-        } 
-        catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage(),
-            ], 500);
-        }}
+            return response()->json(['success' => true,'message' => 'Task created successfully.',], 201);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false,'message' => 'Error: ' . $e->getMessage(),], 500);
+        }
+    }
 
-
-    // public function update(Request $request, $id)
-    // {
-    //     $task = Tasks::findOrFail($id);
-    //     $task->title = $request->input('title');
-    //     $task->description = $request->input('description');
-    //     $task->user_id = auth()->id();
-    //     $task->save();
-
-    //     return response()->json(['success' => true, 'message' => 'Task updated successfully.', 'task' => $task], 201);
-    // }
 
 
     public function update(Request $request, $id)
@@ -91,16 +62,14 @@ class TaskController extends Controller
         return response()->json($this->taskRepo->update($id, $data, Auth::id()));
     }
 
-
     public function destroy($id)
     {
-        try{
-            $this->taskRepo->delete($id, Auth::id());
-        return response()->json(['message' => 'Task deleted']);
+        try {
+            $this->taskRepo->destroy($id, Auth::id());
+            return response()->json(['message' => 'Task deleted']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => '' . $e->getMessage()], );
         }
-        catch(\Exception $e){
-            return response()->json(['success'=> false,'message'=> ''. $e->getMessage()],);
-        }
-        
+
     }
 }
