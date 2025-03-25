@@ -59,17 +59,28 @@ class TaskController extends Controller
             'completed' => 'boolean'
         ]);
 
-        return response()->json($this->taskRepo->update($id, $data, Auth::id()));
+        return response()->json($this->taskRepo->update($id, $data,));
     }
 
     public function destroy($id)
     {
         try {
-            $this->taskRepo->destroy($id, Auth::id());
+            $this->taskRepo->destroy($id, );
             return response()->json(['message' => 'Task deleted']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => '' . $e->getMessage()], );
         }
 
     }
+
+    public function getDeletedTasks(Request $request)
+{
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $deletedTasks = $this->taskRepo->getSoftDeletedTasks($user->id);
+    return response()->json(['deleted_tasks' => $deletedTasks], 200);
+}
 }

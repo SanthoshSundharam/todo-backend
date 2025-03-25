@@ -36,4 +36,9 @@ class TaskRepository
         $task = Tasks::findOrFail($id);
         return $task->delete();
     }
+
+    public function getSoftDeletedTasks($userId)
+{
+    return Tasks::onlyTrashed()->where('user_id', $userId)->get();
+}
 }

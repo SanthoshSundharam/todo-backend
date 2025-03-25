@@ -27,6 +27,9 @@ Route::middleware('auth:sanctum')->get('/getUserTasks/{user_id}', [TaskControlle
 Route::middleware('auth:sanctum')->post('/create', [TaskController::class, 'create'] );
 Route::middleware('auth:sanctum')->put('/update/{id}', [TaskController::class, 'update'] );
 Route::middleware('auth:sanctum')->delete('/delete/{id}', [TaskController::class, 'destroy'] );
+Route::middleware('auth:sanctum')->get('/getDeletedTasks/{user_id}', [TaskController::class, 'getDeletedTasks'] );
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
 
 // Route::middleware('auth:sanctum')->group(function () {
 //     Route::apiResource('todos', TaskController::class);
